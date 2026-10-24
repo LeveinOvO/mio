@@ -19,6 +19,20 @@ Windows 网络工具箱：TCP/UDP 端口转发、IPv4 静态路由与防火墙�
 - IPv4 路由增删改、临时/持久路由、静态项优先排序和筛选。
 - 根据下一跳自动匹配接口；多接口歧义、直连或特殊网络可手动指定。
 
+## 界面预览
+
+### 端口转发
+
+![Mio 端口转发](screenshots/forwarding.png)
+
+### 路由管理
+
+![Mio 路由管理](screenshots/routes.png)
+
+### 防火墙配置
+
+![Mio 防火墙配置](screenshots/firewall.png)
+
 ## 系统要求与验证范围
 
 - Windows x64 桌面环境；安装器要求 build 19044 或更新。
