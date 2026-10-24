@@ -1,0 +1,76 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>PortForwarder</RootNamespace>
+    <AssemblyName>Mio</AssemblyName>
+    <Product>Mio</Product>
+    <Title>Mio · Windows 网络工具箱</Title>
+    <Description>Windows TCP/UDP port forwarding powered by Realm with DNS monitoring and tray support.</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString().ToLowerInvariant())</RuntimeIdentifier>
+    <PublishProfile Condition="Exists('Properties\PublishProfiles\win-$(Platform).pubxml')">win-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <WinUISDKReferences>false</WinUISDKReferences>
+    <WindowsPackageType>None</WindowsPackageType>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+    <WindowsAppSDKDeploymentManagerInitialize>false</WindowsAppSDKDeploymentManagerInitialize>
+    <SatelliteResourceLanguages>en;en-US;en-GB;zh;zh-CN;zh-TW</SatelliteResourceLanguages>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\AppIcon.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="vendor\realm\realm.exe" Link="CoreBin\realm.exe" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="vendor\realm\LICENSE" Link="CoreBin\Realm-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="NativeHost\build\Mio.Host.exe" Link="Mio.Host.exe" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="NativeHost\Routes.ps1" Link="CoreBin\Routes.ps1" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="NativeHost\vendor\sqlite\sqlite3.c" Link="CoreBin\SQLite-source.c" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="NativeHost\vendor\sqlite\sqlite3.h" Link="CoreBin\SQLite-source.h" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="NativeHost\vendor\json-LICENSE.txt" Link="CoreBin\JSON-LICENSE.txt" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="NativeHost\vendor\sqlite\LICENSE.md" Link="CoreBin\SQLite-LICENSE.md" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Core\**;Helper\**;Tests\**;Windows\**;Service\**;artifacts\**;vendor\**;NativeHost\**" />
+    <Compile Remove="Services\TrayIcon.cs" />
+    <EmbeddedResource Remove="Core\**;Helper\**;Tests\**;Windows\**;Service\**;artifacts\**" />
+    <None Remove="Core\**;Helper\**;Tests\**;Windows\**;Service\**;artifacts\**" />
+    <ProjectReference Include="Windows\Mio.Windows.csproj" />
+  </ItemGroup>
+
+  <!-- Dependencies are pinned for reproducible builds. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
+  </ItemGroup>
+
+  <!-- Publish Properties -->
+  <PropertyGroup>
+    <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
+    <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
+    <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
+    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">False</PublishTrimmed>
+  </PropertyGroup>
+
+  <Target Name="PublishNativeIcon" AfterTargets="Publish">
+    <!-- Native LoadImage needs a physical ICO; PRI resources alone are insufficient. -->
+    <MakeDir Directories="$(PublishDir)Assets" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\Assets\AppIcon.ico" DestinationFiles="$(PublishDir)Assets\AppIcon.ico" />
+    <MakeDir Directories="$(PublishDir)CoreBin" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\vendor\realm\realm.exe;$(MSBuildProjectDirectory)\vendor\realm\LICENSE"
+          DestinationFiles="$(PublishDir)CoreBin\realm.exe;$(PublishDir)CoreBin\Realm-LICENSE.txt" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\NativeHost\build\Mio.Host.exe" DestinationFiles="$(PublishDir)Mio.Host.exe" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\NativeHost\vendor\json-LICENSE.txt" DestinationFiles="$(PublishDir)CoreBin\json-LICENSE.txt" />
+  </Target>
+</Project>

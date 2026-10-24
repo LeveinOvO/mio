@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="PortForwarder.RuleEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="添加转发规则" PrimaryButtonText="保存" CloseButtonText="取消"
+    DefaultButton="Primary" PrimaryButtonClick="Save_Click">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" MinWidth="360" MaxWidth="460">
+            <ComboBox x:Name="ProtocolBox" Header="协议" SelectedIndex="0" HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="TCP" /><ComboBoxItem Content="UDP" />
+            </ComboBox>
+            <ComboBox x:Name="ListenAddressBox" Header="监听地址" IsEditable="True"
+                      IsTextSearchEnabled="False"
+                      PlaceholderText="选择网卡地址，或输入 IPv4" HorizontalAlignment="Stretch"
+                      SelectionChanged="ListenAddress_Changed" TextSubmitted="ListenAddress_Submitted">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate><TextBlock Text="{Binding DisplayName}" /></DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBox x:Name="ListenPortBox" Header="监听端口" PlaceholderText="1–65535">
+                <TextBox.InputScope><InputScope><InputScope.Names><InputScopeName NameValue="Number" /></InputScope.Names></InputScope></TextBox.InputScope>
+            </TextBox>
+            <TextBox x:Name="ConnectAddressBox" Header="目标地址" PlaceholderText="例如 192.168.1.20 或 service.example.com" />
+            <TextBox x:Name="ConnectPortBox" Header="目标端口" PlaceholderText="1–65535">
+                <TextBox.InputScope><InputScope><InputScope.Names><InputScopeName NameValue="Number" /></InputScope.Names></InputScope></TextBox.InputScope>
+            </TextBox>
+            <TextBlock Text="域名每 60 秒检查一次，IP 变化时自动更新转发。"
+                       TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock Text="保存后，可点击列表中的“防火墙”配置允许的来源。" TextWrapping="Wrap" FontSize="12" />
+            <TextBlock Text="编辑已启用规则会重启这一条 Realm 转发；其他规则继续运行。" TextWrapping="Wrap" FontSize="12" />
+            <InfoBar x:Name="ValidationMessage" IsOpen="False" IsClosable="False" Severity="Error" />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

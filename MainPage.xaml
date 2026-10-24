@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="PortForwarder.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:services="using:PortForwarder.Services">
+    <Grid Padding="28,16,28,20" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="100" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid ColumnSpacing="16" Height="56">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <Button x:Name="AddButton" Click="Add_Click" Style="{StaticResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE710;" FontSize="14" /><TextBlock Text="添加规则" /></StackPanel>
+                </Button>
+                <Button x:Name="RefreshButton" Click="Refresh_Click" ToolTipService.ToolTip="刷新系统规则和网卡地址">
+                    <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE72C;" FontSize="14" /><TextBlock Text="刷新" /></StackPanel>
+                </Button>
+            </StackPanel>
+            <ScrollViewer Grid.Column="1" Height="56" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <InfoBar x:Name="StatusMessage" IsOpen="False" IsClosable="True" VerticalAlignment="Top" />
+            </ScrollViewer>
+        </Grid>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+            <TextBlock x:Name="CheckedCountText" Text="已勾选 0 项" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <Button x:Name="BatchEnableButton" Content="批量启用" IsEnabled="False" Click="BatchEnable_Click" />
+            <Button x:Name="BatchDisableButton" Content="批量停用" IsEnabled="False" Click="BatchDisable_Click" />
+            <Button x:Name="BatchDeleteButton" Content="批量删除" IsEnabled="False" Click="BatchDelete_Click" />
+        </StackPanel>
+        <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                <Grid Padding="20,14" ColumnSpacing="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36" />
+                        <ColumnDefinition Width="2*" /><ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="2*" /><ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="112" />
+                        <ColumnDefinition Width="172" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="SelectAllBox" IsThreeState="True" Click="SelectAll_Click"
+                              MinWidth="0" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"
+                              ToolTipService.ToolTip="全选 / 取消全选" />
+                    <TextBlock Grid.Column="1" Text="监听地址" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="2" Text="监听端口" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="3" Text="目标地址" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="4" Text="目标端口" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="5" Text="启用" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="6" Text="防火墙状态" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="7" Text="操作" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock Grid.Column="8" Text="协议" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </Grid>
+                <ListView x:Name="RuleList" Grid.Row="1" SelectionMode="Single" SelectionChanged="RuleList_SelectionChanged"
+                          IsItemClickEnabled="False" DoubleTapped="RuleList_DoubleTapped" HorizontalContentAlignment="Stretch" Padding="0">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Padding" Value="20,12" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="services:RuleRow">
+                            <Grid ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36" />
+                                    <ColumnDefinition Width="2*" /><ColumnDefinition Width="90" />
+                                    <ColumnDefinition Width="2*" /><ColumnDefinition Width="90" />
+                                     <ColumnDefinition Width="100" />
+                                     <ColumnDefinition Width="112" />
+                                      <ColumnDefinition Width="172" />
+                                      <ColumnDefinition Width="60" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox IsChecked="{x:Bind IsChecked, Mode=TwoWay}" VerticalAlignment="Center" Click="RowCheck_Click"
+                                          MinWidth="0" Width="20" HorizontalAlignment="Left" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind ListenAddress, Mode=OneWay}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" Text="{x:Bind ListenPort, Mode=OneWay}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="3" Spacing="3" VerticalAlignment="Center" ToolTipService.ToolTip="{x:Bind Tooltip, Mode=OneWay}">
+                                    <TextBlock Text="{x:Bind ConnectAddress, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{x:Bind Details, Mode=OneWay}" FontSize="11" TextTrimming="CharacterEllipsis"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="4" Text="{x:Bind ConnectPort, Mode=OneWay}" VerticalAlignment="Center" />
+                                <ToggleSwitch Grid.Column="5" IsOn="{x:Bind IsEnabled, Mode=OneWay}" Tag="{x:Bind}"
+                                              OnContent="" OffContent="" Toggled="RuleToggle_Toggled" MinWidth="0"
+                                               ToolTipService.ToolTip="关闭转发并保留配置；重新开启可恢复转发。" />
+                                <TextBlock Grid.Column="6" Text="{x:Bind FirewallStatusText, Mode=OneWay}" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind FirewallStatusTooltip, Mode=OneWay}" />
+                                <StackPanel Grid.Column="7" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                    <Button Content="编辑" Tag="{x:Bind}" Click="RowEdit_Click" />
+                                    <Button Content="防火墙" Tag="{x:Bind}" Click="RowFirewall_Click" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="8" Text="{x:Bind ProtocolText, Mode=OneWay}" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <StackPanel x:Name="EmptyState" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+                    <FontIcon Glyph="&#xE968;" FontSize="32" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <TextBlock x:Name="EmptyStateText" Text="尚无端口转发规则" HorizontalAlignment="Center" />
+                    <TextBlock Text="点击“添加规则”配置入口和目标" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="3" ColumnSpacing="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.4*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="1.4*" />
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="KeepInTrayBox" IsChecked="True" Click="KeepInTray_Click" VerticalAlignment="Center"
+                      ToolTipService.ToolTip="勾选：关闭窗口后继续转发；取消勾选：关闭窗口停止转发并退出。">
+                <TextBlock Text="关闭窗口后保留托盘进程，继续转发和监控域名" TextWrapping="Wrap" />
+            </CheckBox>
+            <Grid Grid.Column="1" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                <ProgressRing x:Name="BusyRing" IsActive="False" Visibility="Collapsed" Width="20" Height="20" />
+                <TextBlock x:Name="ServiceStatusText" Grid.Column="1" Text="DNS 监控：正在启动" FontSize="12"
+                           TextWrapping="Wrap" VerticalAlignment="Center" />
+            </Grid>
+            <TextBlock x:Name="RuleCountText" Grid.Column="2" Text="Realm · TCP / UDP" FontSize="12"
+                       TextWrapping="Wrap" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Grid>
+    </Grid>
+</Page>

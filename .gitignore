@@ -1,0 +1,83 @@
+## .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+artifacts/
+
+# Build logs
+[Ll]og/
+[Ll]ogs/
+*.log
+*.binlog
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+# MSIX packaging output
+AppPackages/
+BundleArtifacts/
+*.msix
+*.msixupload
+*.appx
+*.appxbundle
+*.appxupload
+
+# Publish output
+publish/
+*.pubxml
+PublishScripts/
+
+# Code analysis and tooling
+_ReSharper*/
+*.DotSettings.user
+*.dotCover
+.idea/
+
+# Generated files
+Generated\ Files/
+*_wpftmp.csproj
+
+# Local state, build products and private verification evidence
+**/data/
+**/build/
+**/test-route-audit/
+diagnostics/
+design/
+Helper/
+Service/
+Tests/Guest-*.ps1
+Tests/RouteGuest.*
+Tests/FirewallGuest.*
+docs/
+RELEASE_NOTES_V1.*.md
+*.lnk
+*.db
+*.db-wal
+*.db-shm
+*.jsonl
+*.key
+*.pfx
+*.p12
+*.pem
+known_hosts*
+__pycache__/
+*.pyc
+Installer/Test-Installer.ps1
+vendor/realm/*.tar.gz
+Properties/launchSettings.json

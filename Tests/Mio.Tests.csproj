@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Services\TrayIcon.cs" Link="TrayIcon.cs" />
+    <Compile Include="..\Services\RuleRow.cs" Link="RuleRow.cs" />
+    <Compile Include="..\Services\RuleListUpdater.cs" Link="RuleListUpdater.cs" />
+    <Compile Include="..\Services\NetworkAddresses.cs" Link="NetworkAddresses.cs" />
+    <!-- Previous managed engine is a test oracle only; it is not in the GUI library. -->
+    <Compile Include="..\Windows\*.cs" Exclude="..\Windows\NativeHostClient.cs;..\Windows\FirewallStatusSnapshot.cs;..\Windows\AssemblyInfo.cs" Link="ManagedOracle\%(Filename)%(Extension)" />
+    <ProjectReference Include="..\Windows\Mio.Windows.csproj" />
+  </ItemGroup>
+</Project>
